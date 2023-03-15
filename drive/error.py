@@ -5,8 +5,13 @@ class Error():
     '''
     def __init__(self,id_func,type_error,case=None) -> None:
         self.case = case
-        dic_type = {143510:{'len<1':self.move_file_len_low},
-                    143509:{'folder_not_file' :  self.not_file,}
+        dic_type = {143510:{'len<1':self.move_file_len_low,
+                            'folder_not_file' : self.not_file,
+                            'no_file_found'   : self.not_find_file
+                            },
+                    143509:{'folder_not_file' : self.not_file,
+                            'no_file_found'   : self.not_find_file
+                            }
                     }
         dic_type[id_func][type_error]()
         pass
@@ -15,6 +20,11 @@ class Error():
     ## Erros from function move_file ##
     ###################################
     def not_file(self):
+        '''
+        this error can be seeing in the functions:
+        move_files -> 143510
+        move_file  -> 143509
+        '''
         print("ERROR")
         print("the item found was not a file")
         print(f"the mymetype of the item found is: {self.case}")
@@ -27,3 +37,7 @@ class Error():
         print("ERROR")
         print("the code expected to receive a list with one or more items and the key dest, but received a list with just one element that can not be specified")
         print(f'the element is: {self.case}')
+
+    def not_find_file(self):
+        print("ERROR")
+        print('The code executed query function, but get no item match from google API')
