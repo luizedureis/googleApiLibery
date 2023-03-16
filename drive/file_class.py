@@ -1,8 +1,9 @@
+from apiclient.http import MediaFileUpload
 from drive.google_main import Google
 from drive.error import Error
 import ast
 
-class file_sheet(Google):
+class file(Google):
     def __init__(self,*file_name) -> None:
         super().__init__()
         # puxando nome do arquivo que será substituido
@@ -11,17 +12,12 @@ class file_sheet(Google):
 
     def generate_service(self):
         #Keys para capturar pastas drive
-        SCOPES = ['https://www.googleapis.com/auth/drive']
+        SCOPES = ['https://www.googleapis.com/auth/drive.file']
         CLIENT_SECRET_FILE = self.chromedriver
         API_NAME = 'drive'
         API_VERSION = 'V3'
         return self.Create_Service(CLIENT_SECRET_FILE,API_NAME,API_VERSION,SCOPES)
 
-   ####################################
-   ####################################
-   #### Processo de mover arquivos ####
-   ####################################
-   ####################################
    
     def move_file(self,
                   folder_id=str,
@@ -41,6 +37,7 @@ class file_sheet(Google):
         if type(self.__file[0]) == str:
             # query para filtrar a pasta pai e o nome do arquivo target
             query = f"parents = '{folder_id}' and name = '{self.__file[0]}'"
+            print(query)
             # localizando file, pelo correto irá retornar apenas um item
             file = self.service.files().list(q=query).execute()
             if len(file['files'])==0:
@@ -134,7 +131,7 @@ class file_sheet(Google):
                     print(f'item {name_file} Error, doing next item or ending the function')
                 else:
                     self.service.files().update(
-                        fileId       = file['id'],
+                        fileId        = file['id'],
                         addParents    = folder_target,
                         removeParents = folder_id
                     ).execute()
@@ -150,4 +147,54 @@ class file_sheet(Google):
                 query = f"{query} and name = '{name}'"
                 inicial = True
         return query
-    
+      
+    def teste_listagem_itens(self,folder_id):
+        # query para filtrar a pasta pai e o nome do arquivo target
+        query = f"parents = '{folder_id}' and name = '{self.__file[0]}'"
+        print(query)
+        # localizando file, pelo correto irá retornar apenas um item
+        file = self.service.files().list(q=query).execute()
+        print(file)
+        # self.service.files().delete(fileId=fileid).execute()
+
+
+    def upload_file(self,folder_id,mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',convert=None):
+        '''
+        The function expect to receive a folder id to send the new file, the name file and the mime Type file. If you don't pass any argument for the mimetipe
+        The function will consider that you are uploading is a XLSX file.
+        \n
+        You can call the function like:
+        >>> file(name_file.ex).upload_file(folder_id)
+        \n
+        To change the mimeType file you can call the function like:
+        >>> file(name_file.ex).upload_file(folder_id,diferent_mimeType)
+        \n
+        To check what your file mimeType check the link:\n
+        https://developers.google.com/drive/api/guides/ref-export-formats?hl=pt-br\n
+        The function can convert the file when uploaded. For example, you can upload a xlsx file and convert to sheets plan. You can use this method calling the function like:
+        >>> file(name_file.ex).upload_file(folder_id,convert=new_mimeType)
+        Or
+        >>> file(name_file.ex).upload_file(folder_id,diferent_mimeType,new_mimeType)
+        \n
+        To check witch conversions are possible, check the link: 
+        \n
+        https://developers.google.com/drive/api/guides/manage-uploads?hl=pt-br#importing_to_google_docs_types_wzxhzdk8wzxhzdk9
+        \n
+        OBS:Do not pass file name with ".", the code split the "." to get the file extension.
+        '''
+        self.__id=602316
+        # gerando file metadata com a opção de converter ou não
+        if   convert == None: file_metadata = {'name':str(self.__file[0]).split('.')[0]}
+        elif convert != None: file_metadata = {'name':str(self.__file[0]).split('.')[0],'mimeType':convert}
+
+        media = MediaFileUpload(self.__file[0],
+                                mimeType  = mimeType,
+                                resumable = True)
+        # gerando arquivo
+        file = self.service.files().create(body       = file_metadata,
+                                           media_body = media,
+                                           fields     = 'id').execute()
+        # atualizando arquivo e subindo na pasta do drive indicada
+        self.service.files().update(
+            fileId     = file['id'],
+            addParents = folder_id).execute()
