@@ -40,4 +40,5 @@ class Error():
 
     def not_find_file(self):
         print("ERROR")
+        print("Item not find found")
         print('The code executed query function, but get no item match from google API')
