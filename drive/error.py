@@ -2,6 +2,8 @@ class Error():
     '''
     move_files -> 143510
     move_file  -> 143509
+
+    upload_file -> 602316
     '''
     def __init__(self,id_func,type_error,case=None) -> None:
         self.case = case
@@ -11,7 +13,10 @@ class Error():
                             },
                     143509:{'folder_not_file' : self.not_file,
                             'no_file_found'   : self.not_find_file
-                            }
+                            },
+                    602316:{
+                    }
+                    
                     }
         dic_type[id_func][type_error]()
         pass
