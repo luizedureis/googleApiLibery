@@ -5,6 +5,8 @@ class Error():
 
     upload_file -> 602316
     upload_files -> 1028317
+
+    delete_file -> 304317
     '''
     def __init__(self,id_func,type_error,case=None) -> None:
         self.case = case
@@ -18,12 +20,22 @@ class Error():
                     602316:{
                     },
                     1028317:{
+                    },
+                    304317:{'Del_file_error':self.del_error
                     }
                     }
         
         dic_type[id_func][type_error]()
         pass
     
+    #####################################
+    ## Error from function delete_file ##
+    #####################################
+
+    def del_error(self):
+        print("ERROR")
+        print("Erro to delete the file, the error can not be specified, maybe the code could not delete the file or didn't find the file")
+        print(f"The fileId error was {self.case}")
     ###################################
     ## Erros from function move_file ##
     ###################################
@@ -35,7 +47,7 @@ class Error():
         '''
         print("ERROR")
         print("the item found was not a file")
-        print(f"the mymetype of the item found is: {self.case}")
+        print(f"the mymetype of the item found is: {self.case}\n")
 
  
     ####################################
@@ -44,9 +56,9 @@ class Error():
     def move_file_len_low(self):
         print("ERROR")
         print("the code expected to receive a list with one or more items and the key dest, but received a list with just one element that can not be specified")
-        print(f'the element is: {self.case}')
+        print(f'the element is: {self.case}\n')
 
     def not_find_file(self):
         print("ERROR")
         print("Item not find found")
-        print('The code executed query function, but get no item match from google API')
+        print('The code executed query function, but get no item match from google API\n')
