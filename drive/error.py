@@ -4,6 +4,7 @@ class Error():
     move_file  -> 143509
 
     upload_file -> 602316
+    upload_files -> 1028317
     '''
     def __init__(self,id_func,type_error,case=None) -> None:
         self.case = case
@@ -15,9 +16,11 @@ class Error():
                             'no_file_found'   : self.not_find_file
                             },
                     602316:{
+                    },
+                    1028317:{
                     }
-                    
                     }
+        
         dic_type[id_func][type_error]()
         pass
     
