@@ -7,10 +7,12 @@ class Error():
     upload_files -> 1028317
 
     delete_file -> 304317
+
+    list_files -> 403317
     '''
     def __init__(self,id_func,type_error,case=None) -> None:
         self.case = case
-        dic_type = {143510:{'len<1':self.move_file_len_low,
+        dic_type = {143510:{'len<1'           : self.move_file_len_low,
                             'folder_not_file' : self.not_file,
                             'no_file_found'   : self.not_find_file
                             },
@@ -18,11 +20,12 @@ class Error():
                             'no_file_found'   : self.not_find_file
                             },
                     602316:{
-                    },
+                            },
                     1028317:{
-                    },
-                    304317:{'Del_file_error':self.del_error
-                    }
+                            },
+                    304317:{'Del_file_error'  : self.del_error
+                            },
+                    403317:{'no_file_found'   : self.not_find_file}
                     }
         
         dic_type[id_func][type_error]()
